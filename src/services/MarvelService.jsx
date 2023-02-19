@@ -22,9 +22,16 @@ class MarvelService {
     }
 
     _transformCharacter = (char) => {
+        const description = (descr, num) => {
+            if (descr) {
+                return descr.slice(0, num) + '...';
+            } else {
+                return "Sorry, we don't have a description for this character.";
+            }
+        }
         return {
             name: char.name,
-            description: char.description,
+            description: description(char.description, 210),
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
