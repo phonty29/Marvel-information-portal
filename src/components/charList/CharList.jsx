@@ -4,33 +4,52 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMEssage';
 import './charList.scss';
 
+let total = 1;
 class CharList extends Component {
     state = {
         charList: [],
         loading: true,
-        error: false
+        error: false,
+        newItemLoading: false,
+        offset: 210,
     }
 
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.marvelService
-        .getAllCharacters()
+        if (total === 1) {
+            this.onRequest();
+            total--;
+        }
+    }
+
+    onRequest = (offset) => {
+        this.onCharListLoading();
+        this.marvelService.getAllCharacters(offset)
         .then(this.onCharListLoaded)
         .catch(this.onError)
+    }
+
+    onCharListLoading = () => {
+        this.setState({
+            newItemLoading: true
+        })
+    }
+
+
+    onCharListLoaded = (newCharList) => {
+        this.setState(({offset, charList}) => ({
+            charList: [...charList, ...newCharList],
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+        }))
     }
 
     onError = () => {
         this.setState({
             loading: false,
             error: true,
-        })
-    }
-
-    onCharListLoaded = (charList) => {
-        this.setState({
-            charList,
-            loading: false,
         })
     }
 
@@ -57,7 +76,7 @@ class CharList extends Component {
     }
 
     render () {
-        const {charList, loading, error} = this.state;
+        const {charList, loading, error, offset, newItemLoading} = this.state;
         const items = this.renderItems(charList);
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
@@ -68,7 +87,7 @@ class CharList extends Component {
                 {errorMessage}
                 {spinner}
                 {items}
-                <button className="button button__main button__long">
+                <button disabled={newItemLoading} onClick={() => this.onRequest(offset)} className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
             </div>
