@@ -2,7 +2,7 @@ import {Component} from 'react';
 import PropTypes from 'prop-types'
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMEssage';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import './charList.scss';
 
 let total = 1;
